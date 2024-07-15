@@ -38,7 +38,8 @@ def main():
     
     if video_file is not None:
         # 書き込み可能なディレクトリにtempフォルダを作成
-        temp_folder = "/tmp/temp"  # 書き込み可能なディレクトリを使用
+        current_dir = os.getcwd()
+        temp_folder = os.path.join(current_dir, "temp")
         os.makedirs(temp_folder, exist_ok=True)
         
         # アップロードされた動画をtempフォルダに保存
