@@ -9,7 +9,7 @@ def extract_audio(video_path, temp_folder):
     
     clip = mp.VideoFileClip(video_path)
     audio_path = os.path.join(temp_folder, f"{video_name_without_ext}_audio.wav")
-    clip.audio.write_audiofile(audio_path, buffersize=2000)  # バッファサイズを小さく設定
+    clip.audio.write_audiofile(audio_path, progress_bar=False)  # 進捗バーを無効化
     
     return audio_path
 
@@ -21,7 +21,7 @@ def remove_audio(video_path, temp_folder):
     clip = mp.VideoFileClip(video_path)
     video_without_audio_path = os.path.join(temp_folder, f"{video_name_without_ext}_no_audio.mp4")
     clip_without_audio = clip.set_audio(None)
-    clip_without_audio.write_videofile(video_without_audio_path)
+    clip_without_audio.write_videofile(video_without_audio_path, progress_bar=False)  # 進捗バーを無効化
     
     return video_without_audio_path
 
@@ -56,8 +56,13 @@ def main():
             st.markdown("### 処理済みファイルのダウンロード:")
             
             # ダウンロードリンク
-            st.markdown(f"ダウンロード [抽出された音声]({audio_path})")
-            st.markdown(f"ダウンロード [音声無し動画]({video_without_audio_path})")
+            with open(audio_path, "rb") as audio_file:
+                audio_bytes = audio_file.read()
+                st.download_button(label="抽出された音声をダウンロード", data=audio_bytes, file_name=os.path.basename(audio_path))
+                
+            with open(video_without_audio_path, "rb") as video_file:
+                video_bytes = video_file.read()
+                st.download_button(label="音声無し動画をダウンロード", data=video_bytes, file_name=os.path.basename(video_without_audio_path))
 
 # アプリの実行
 if __name__ == "__main__":
