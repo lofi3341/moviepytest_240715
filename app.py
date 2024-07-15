@@ -33,7 +33,9 @@ def main():
     video_file = st.file_uploader("動画ファイルをアップロードしてください", type=['mp4', 'mov', 'avi'])
     
     if video_file is not None:
-        temp_folder = "temp"
+        # 作業ディレクトリのルートにtempフォルダを作成
+        current_dir = os.getcwd()
+        temp_folder = os.path.join(current_dir, "temp")
         os.makedirs(temp_folder, exist_ok=True)
         
         # アップロードされた動画をローカルに保存
@@ -46,12 +48,20 @@ def main():
         # 処理ボタン
         if st.button("動画を処理する"):
             # 音声を抽出
-            audio_path = extract_audio(video_path, temp_folder)
-            st.success(f"音声を抽出しました: {os.path.basename(audio_path)}")
+            try:
+                audio_path = extract_audio(video_path, temp_folder)
+                st.success(f"音声を抽出しました: {os.path.basename(audio_path)}")
+            except Exception as e:
+                st.error(f"音声抽出中にエラーが発生しました: {e}")
+                return
             
             # 音声を無くした動画を生成
-            video_without_audio_path = remove_audio(video_path, temp_folder)
-            st.success(f"音声無し動画を保存しました: {os.path.basename(video_without_audio_path)}")
+            try:
+                video_without_audio_path = remove_audio(video_path, temp_folder)
+                st.success(f"音声無し動画を保存しました: {os.path.basename(video_without_audio_path)}")
+            except Exception as e:
+                st.error(f"音声無し動画生成中にエラーが発生しました: {e}")
+                return
             
             st.markdown("### 処理済みファイルのダウンロード:")
             
