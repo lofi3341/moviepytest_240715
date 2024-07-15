@@ -9,7 +9,7 @@ def extract_audio(video_path, temp_folder):
     
     clip = mp.VideoFileClip(video_path)
     audio_path = os.path.join(temp_folder, f"{video_name_without_ext}_audio.wav")
-    clip.audio.write_audiofile(audio_path)
+    clip.audio.write_audiofile(audio_path, buffersize=2000)  # バッファサイズを小さく設定
     
     return audio_path
 
