@@ -21,7 +21,11 @@ def remove_audio(video_path, temp_folder):
     clip = mp.VideoFileClip(video_path)
     video_without_audio_path = os.path.join(temp_folder, f"{video_name_without_ext}_no_audio.mp4")
     clip_without_audio = clip.set_audio(None)
-    clip_without_audio.write_videofile(video_without_audio_path, logger=None)  # 進捗バーを無効化
+    
+    try:
+        clip_without_audio.write_videofile(video_without_audio_path, logger=None, verbose=True)  # 進捗バーを無効化
+    except Exception as e:
+        raise IOError(f"MoviePy error: FFMPEG encountered the following error while writing file {video_without_audio_path}:\n{str(e)}")
     
     return video_without_audio_path
 
@@ -33,12 +37,11 @@ def main():
     video_file = st.file_uploader("動画ファイルをアップロードしてください", type=['mp4', 'mov', 'avi'])
     
     if video_file is not None:
-        # 作業ディレクトリのルートにtempフォルダを作成
-        current_dir = os.getcwd()
-        temp_folder = os.path.join(current_dir, "temp")
+        # 書き込み可能なディレクトリにtempフォルダを作成
+        temp_folder = "/tmp/temp"  # 書き込み可能なディレクトリを使用
         os.makedirs(temp_folder, exist_ok=True)
         
-        # アップロードされた動画をローカルに保存
+        # アップロードされた動画をtempフォルダに保存
         video_path = os.path.join(temp_folder, video_file.name)
         with open(video_path, "wb") as f:
             f.write(video_file.getbuffer())
