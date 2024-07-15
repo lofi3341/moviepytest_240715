@@ -9,7 +9,7 @@ def extract_audio(video_path, temp_folder):
     
     clip = mp.VideoFileClip(video_path)
     audio_path = os.path.join(temp_folder, f"{video_name_without_ext}_audio.wav")
-    clip.audio.write_audiofile(audio_path, progress_bar=False)  # 進捗バーを無効化
+    clip.audio.write_audiofile(audio_path, logger=None)  # 進捗バーを無効化
     
     return audio_path
 
@@ -21,7 +21,7 @@ def remove_audio(video_path, temp_folder):
     clip = mp.VideoFileClip(video_path)
     video_without_audio_path = os.path.join(temp_folder, f"{video_name_without_ext}_no_audio.mp4")
     clip_without_audio = clip.set_audio(None)
-    clip_without_audio.write_videofile(video_without_audio_path, progress_bar=False)  # 進捗バーを無効化
+    clip_without_audio.write_videofile(video_without_audio_path, logger=None)  # 進捗バーを無効化
     
     return video_without_audio_path
 
